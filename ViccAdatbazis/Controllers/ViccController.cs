@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 using ViccAdatbazis.Data;
@@ -89,6 +90,23 @@ namespace ViccAdatbazis.Controllers
         }
 
         //Like
+
+        [Route("{id}/Like")]
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> Like(int id)
+        {
+            var vicc = _context.Viccek.Find(id);
+            if (vicc == null)
+            {
+                return NotFound();
+            }
+
+            vicc.Tetszik++;
+            _context.Entry(vicc).State = EntityState.Modified;           
+
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
 
         //Dislike
     }
